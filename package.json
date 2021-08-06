@@ -1,12 +1,19 @@
 {
-  "name": "MyParkingLot",
+  "name": "MyParking",
   "version": "1.0.0",
-  "description": "",
+  "description": "My parking",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test-unit": "mocha tests/parking.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "Theerayut Thanyaphoo",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "4.3.4",
+    "mocha": "9.0.3"
+  }
 }
