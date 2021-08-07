@@ -16,3 +16,6 @@ test_logs/
 # Coverage
 .nyc_output/
 coverage/
+
+# docker-compose
+docker-compose/.redis_data/
