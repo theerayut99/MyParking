@@ -125,6 +125,32 @@ const Parking = {
       console.error('# Error Controller Parking.leaveCarSlotDelete:', err);
       return next(err);
     }
+  },
+  carStatusGet: async (req, res, next) => {
+    console.log('# Controller Parking.leaveCarSlotDelete');
+    try {
+      let resData = {
+        code: 1,
+        msg: null,
+        data: {}
+      }
+      let parkingName = req.query.parkingName;
+      let vehicleNumber = req.query.vehicleNumber;
+      let parkingsSlot = await modelRedis.getStoreByKey(parkingName);
+      const parkingSlot = new ParkingService();
+      const isInParkinglot = await parkingSlot.isInParkinglot(vehicleNumber, parkingsSlot);
+      if (!isInParkinglot) {
+        resData.msg = "The car is not in the parking lot.";
+        return res.json(resData);
+      } else {
+        resData.code = 0;
+        resData.msg = "The car is in the parking lot.";
+        return res.json(resData);
+      }
+    } catch (err) {
+      console.error('# Error Controller Parking.leaveCarSlotDelete:', err);
+      return next(err);
+    }
   }
 };
 

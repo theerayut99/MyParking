@@ -63,6 +63,12 @@ describe('Testing Parking Functions', function () {
     done();
   });
 
+  it('Check car status from Vehicle Number พร1', function (done) {
+    var result = parkingSlot.parkingStatus('พร1');
+    assert.equal(result, true);
+    done();
+  });
+
   it('Add Vehicle to Parking', (done) => {
     const result = parkingSlot.parkingSlots;
     console.log('slot : ', result)

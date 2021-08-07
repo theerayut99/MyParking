@@ -63,6 +63,14 @@ class Parking {
     return leaveVehicleNumber;
   }
 
+  parkingStatus (vehicleNumber) {
+    let chk = false;
+    this.parkingSlots.map(p => {
+      if (p.vehicleNumber === vehicleNumber) chk = true;
+    })
+    return chk;
+  }
+
   async isInParkinglot (vehicleNumber, parkingSlots) {
     return new Promise(function(resolve, reject) {
       try {
