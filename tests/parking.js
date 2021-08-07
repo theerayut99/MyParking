@@ -7,7 +7,8 @@ let totalParkings;
 describe('Testing Parking Functions', function () {
   it('Creating Parking', (done) => {
     totalParkings = parkingSlot.createParking(5);
-    assert.equal(totalParkings, 5);
+    const countParking = totalParkings.length || 0;
+    assert.equal(countParking, 5);
     done();
   });
 
@@ -53,6 +54,12 @@ describe('Testing Parking Functions', function () {
       vehicleSize: 'midium'
     });
     assert.equal(result, 5, 'Grate!');
+    done();
+  })
+
+  it('Add Vehicle to Parking', (done) => {
+    const result = parkingSlot.parkingSlots;
+    console.log('slot : ', result)
     done();
   })
 });
