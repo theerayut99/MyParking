@@ -17,7 +17,7 @@ describe('Testing Parking Functions', function () {
       vehicleNumber: 'กค8882',
       vehicleSize: 'large'
     });
-    assert.equal(result, 1, 'Grate!');
+    assert.equal(result, 1);
     done();
   })
 
@@ -26,7 +26,7 @@ describe('Testing Parking Functions', function () {
       vehicleNumber: 'จจ9999',
       vehicleSize: 'small'
     });
-    assert.equal(result, 2, 'Grate!');
+    assert.equal(result, 2);
     done();
   })
 
@@ -35,7 +35,7 @@ describe('Testing Parking Functions', function () {
       vehicleNumber: 'ดด1234',
       vehicleSize: 'midium'
     });
-    assert.equal(result, 3, 'Grate!');
+    assert.equal(result, 3);
     done();
   })
 
@@ -44,7 +44,7 @@ describe('Testing Parking Functions', function () {
       vehicleNumber: 'พร1',
       vehicleSize: 'large'
     });
-    assert.equal(result, 4, 'Grate!');
+    assert.equal(result, 4);
     done();
   })
 
@@ -53,7 +53,7 @@ describe('Testing Parking Functions', function () {
       vehicleNumber: 'กด432',
       vehicleSize: 'midium'
     });
-    assert.equal(result, 5, 'Grate!');
+    assert.equal(result, 5);
     done();
   })
 

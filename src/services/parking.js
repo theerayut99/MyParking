@@ -8,6 +8,13 @@ class Parking {
     this.parkingSlots = [];
   }
 
+  setParkingSlot (parkingSlots) {
+    this.parkingSlots = parkingSlots;
+    this.slot = this.parkingSlots.lenght;
+    console.log('setParkingSlot', this.slot, this.parkingSlots)
+    return this.parkingSlots;
+  }
+
 	createParking (slot) {
 		this.slot = slot;
 		if (this.slot <= 0) throw new Error('Minimum 1 slot is required');
@@ -23,14 +30,16 @@ class Parking {
 
   addVehicle (vehicle) {
     if (this.slot > 0) {
-      if (this.getNearestSlot(this.parkingSlots) === true) {
-        for (var i = 0; i < this.slot; i++) {
-          if (this.parkingSlots[i].vehicleNumber === '' && this.parkingSlots[i].vehicleSize === '') {
-            this.parkingSlots[i].vehicleNumber = vehicle.vehicleNumber;
-            this.parkingSlots[i].vehicleSize = vehicle.vehicleSize;
-            return this.parkingSlots[i].slotNumber;
+      let slotNumber = this.getNearestSlot(this.parkingSlots);
+      if (slotNumber && slotNumber > 0) {
+        this.parkingSlots = this.parkingSlots.map(p => {
+          if (p.slotNumber === slotNumber) {
+            p.vehicleNumber = vehicle.vehicleNumber;
+            p.vehicleSize = vehicle.vehicleSize;
           }
-        }
+          return p;
+        })
+        return slotNumber;
       } else {
         throw new Error('Sorry, parking slot is full');
       }
@@ -39,12 +48,26 @@ class Parking {
     }
   }
 
-  getNearestSlot () {
-    let result = false;
-		for (var i = 0; i < this.parkingSlots.length; i++) {
-			if (this.parkingSlots[i].vehicleNumber === '' && this.parkingSlots[i].vehicleSize === '') result = true;
+  async isDuplicate (vehicleNumber, parkingSlots) {
+    return new Promise(function(resolve, reject) {
+      try {
+        let chk = false;
+			  parkingSlots.map(p => {
+          if (p.vehicleNumber === vehicleNumber) chk = true;
+        })
+				resolve(chk)
+			} catch (error) {
+				console.error('### Error service Parking.checkVehicle', error)
+				resolve(false)
+			}
+		})
+  }
+
+  getNearestSlot (parkingSlots) {
+		for (var i = 0; i < parkingSlots.length; i++) {
+			if (parkingSlots[i].vehicleNumber === '' && parkingSlots[i].vehicleSize === '') return parkingSlots[i].slotNumber;
 		}
-		return result;
+    return false;
   }
 }
 

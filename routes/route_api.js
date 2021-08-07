@@ -22,5 +22,6 @@ router.get('/', [middleware.requireClientSignature], function (req, res, next) {
 
 router.get('/parking', Parking.parkingGet);
 router.post('/parking', Parking.parkingPost);
+router.post('/parking/car', Parking.parkingCarPost);
 
 module.exports = router;

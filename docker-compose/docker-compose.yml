@@ -1,6 +1,5 @@
 version: '3.7'
 services:
-
   redis:
     image: 'docker.io/bitnami/redis:6.2-debian-10'
     container_name: ${REDIS_HOST:-redis}
