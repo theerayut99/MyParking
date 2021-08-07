@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+
+  redis:
+    image: 'docker.io/bitnami/redis:6.2-debian-10'
+    container_name: ${REDIS_HOST:-redis}
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - '6379:6379'
+    volumes:
+      - './.redis_data:/bitnami/redis/data'
+
+  api:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    container_name: api
+    restart: always
+    volumes:
+      - ../.:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3000:3000
+
+
