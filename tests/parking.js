@@ -57,6 +57,12 @@ describe('Testing Parking Functions', function () {
     done();
   })
 
+  it('Leaving from Vehicle Number ดด1234', function (done) {
+    var result = parkingSlot.leaveVehicle('ดด1234');
+    assert.equal(result, 'ดด1234');
+    done();
+  });
+
   it('Add Vehicle to Parking', (done) => {
     const result = parkingSlot.parkingSlots;
     console.log('slot : ', result)

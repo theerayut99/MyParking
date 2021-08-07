@@ -48,7 +48,22 @@ class Parking {
     }
   }
 
-  async isDuplicate (vehicleNumber, parkingSlots) {
+  leaveVehicle (vehicleNumber) {
+    let leaveVehicleNumber;
+    let isInParkinglot = this.isInParkinglot(vehicleNumber, this.parkingSlots);
+    if (!isInParkinglot) return false;
+    this.parkingSlots = this.parkingSlots.map(p => {
+      if (p.vehicleNumber === vehicleNumber) {
+        leaveVehicleNumber = p.vehicleNumber;
+        p.vehicleNumber = '';
+        p.vehicleSize = '';
+      }
+      return p;
+    });
+    return leaveVehicleNumber;
+  }
+
+  async isInParkinglot (vehicleNumber, parkingSlots) {
     return new Promise(function(resolve, reject) {
       try {
         let chk = false;
@@ -57,7 +72,7 @@ class Parking {
         })
 				resolve(chk)
 			} catch (error) {
-				console.error('### Error service Parking.checkVehicle', error)
+				console.error('### Error service Parking.isInSlot', error)
 				resolve(false)
 			}
 		})

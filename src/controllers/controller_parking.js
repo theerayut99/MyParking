@@ -60,9 +60,9 @@ const Parking = {
       let vehicle = req.body.item;
       let parkingsSlot = await modelRedis.getStoreByKey(parkingName);
       const parkingSlot = new ParkingService();
-      const isDuplicate = await parkingSlot.isDuplicate(vehicle.vehicleNumber, parkingsSlot);
-      if (isDuplicate) {
-        resData.msg = "Car is Duplicate.";
+      const isInParkinglot = await parkingSlot.isInParkinglot(vehicle.vehicleNumber, parkingsSlot);
+      if (isInParkinglot) {
+        resData.msg = "The car is in the parking lot.";
         return res.json(resData);
       }
       let slotNumber = parkingSlot.getNearestSlot(parkingsSlot);
@@ -75,7 +75,7 @@ const Parking = {
           return p;
         });
       } else {
-        resData.msg = "Parking slot is full.";
+        resData.msg = "Parking lot is full.";
         return res.json(resData);
       }
       const result = await modelRedis.setStoreByKey(parkingName, parkingsSlot);
@@ -90,6 +90,42 @@ const Parking = {
       return next(err);
     }
   },
+  leaveCarSlotDelete: async (req, res, next) => {
+    console.log('# Controller Parking.leaveCarSlotDelete');
+    try {
+      let resData = {
+        code: 1,
+        msg: null,
+        data: {}
+      }
+      let parkingName = req.params.parkingName;
+      let vehicleNumber = req.params.vehicleNumber;
+      let parkingsSlot = await modelRedis.getStoreByKey(parkingName);
+      const parkingSlot = new ParkingService();
+      const isInParkinglot = await parkingSlot.isInParkinglot(vehicleNumber, parkingsSlot);
+      if (!isInParkinglot) {
+        resData.msg = "The car is not in the parking lot.";
+        return res.json(resData);
+      }
+      parkingsSlot = parkingsSlot.map(p => {
+        if (p.vehicleNumber === vehicleNumber) {
+          p.vehicleNumber = '';
+          p.vehicleSize = '';
+        }
+        return p;
+      });
+      const result = await modelRedis.setStoreByKey(parkingName, parkingsSlot);
+      if (result) {
+        resData.code = 0;
+        resData.msg = 'success';
+        resData.data = vehicleNumber;
+      }
+      return res.json(resData);
+    } catch (err) {
+      console.error('# Error Controller Parking.leaveCarSlotDelete:', err);
+      return next(err);
+    }
+  }
 };
 
 module.exports = Parking;
