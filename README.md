@@ -20,6 +20,18 @@ $ cd docker-compose
 $ docker-compose up -d --build
 ```
 
+## Development
+```
+$ cd MyParking
+$ npm install
+$ npm run dev
+```
+
+## Unit Test
+
+![Screen Shot 2564-08-08 at 22 26 07](https://user-images.githubusercontent.com/12118419/128637189-b9b57515-31bc-4a3c-a4f4-aa3a99a160d8.png)
+
+
 ## api to create parking lot
 ### Request
 ```
