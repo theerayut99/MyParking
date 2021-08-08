@@ -83,6 +83,18 @@ describe('Testing Parking Functions', function () {
     done();
   });
 
+  it('Check car slot from Vehicle size small', function (done) {
+    var result = parkingSlot.checkCarBySize('small');
+    assert.equal(result.length, 2);
+    done();
+  });
+
+  it('Check registration allocated slot number list by car size medium', function (done) {
+    var result = parkingSlot.checkSlotBySize('medium');
+    assert.equal(result, 3);
+    done();
+  });
+
   it('Add Vehicle to Parking', (done) => {
     const result = parkingSlot.parkingSlots;
     console.log('slot : ', result)

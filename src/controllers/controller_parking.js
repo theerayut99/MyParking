@@ -122,7 +122,7 @@ const Parking = {
     }
   },
   carStatusGet: async (req, res, next) => {
-    console.log('# Controller Parking.leaveCarSlotDelete');
+    console.log('# Controller Parking.carStatusGet');
     try {
       let resData = {
         code: 1,
@@ -143,12 +143,12 @@ const Parking = {
         return res.json(resData);
       }
     } catch (err) {
-      console.error('# Error Controller Parking.leaveCarSlotDelete:', err);
+      console.error('# Error Controller Parking.carStatusGet:', err);
       return next(err);
     }
   },
   carBySizeGet: async (req, res, next) => {
-    console.log('# Controller Parking.leaveCarSlotDelete');
+    console.log('# Controller Parking.carBySizeGet');
     try {
       let resData = {
         code: 1,
@@ -169,10 +169,38 @@ const Parking = {
         return res.json(resData);
       }
     } catch (err) {
-      console.error('# Error Controller Parking.leaveCarSlotDelete:', err);
+      console.error('# Error Controller Parking.carBySizeGet:', err);
       return next(err);
     }
   },
+  slotBySizeGet: async (req, res, next) => {
+    console.log('# Controller Parking.slotBySizeGet');
+    try {
+      let resData = {
+        code: 1,
+        msg: null,
+        data: {}
+      }
+      let size = req.params.size;
+      let parkingsSlot = await modelRedis.getStoreByKey('park');
+      const parkingSlot = new ParkingService();
+      const slotNumber = await parkingSlot.slotBySizeGet(size, parkingsSlot);
+      if (!slotNumber) {
+        resData.msg = `Parking lot size ${size} is full.`;
+        return res.json(resData);
+      } else {
+        resData.code = 0;
+        resData.msg = "success";
+        resData.data = {
+          slotNumber: slotNumber
+        }
+        return res.json(resData);
+      }
+    } catch (err) {
+      console.error('# Error Controller Parking.slotBySizeGet:', err);
+      return next(err);
+    }
+  }
 };
 
 module.exports = Parking;

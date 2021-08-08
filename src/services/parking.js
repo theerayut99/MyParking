@@ -96,6 +96,30 @@ class Parking {
 		})
   }
 
+  checkCarBySize (size) {
+    const parkinglot = this.parkingSlots.filter(p => p.vehicleSize === size && p.vehicleNumber !== '' );
+    return parkinglot;
+  }
+
+  async slotBySizeGet (size, parkingSlots) {
+    return new Promise(function(resolve, reject) {
+      try {
+        parkingSlots.filter(p => {
+          if (p.vehicleSize === size && p.vehicleNumber === '') resolve(p.slotNumber);
+        })
+				resolve(false)
+			} catch (error) {
+				console.error('### Error service Parking.isInSlot', error)
+				resolve(false)
+			}
+		})
+  }
+
+  checkSlotBySize (size) {
+    const parkinglot = this.parkingSlots.filter(p => p.vehicleSize === size && p.vehicleNumber === '' );
+    return parkinglot[0].slotNumber || false;
+  }
+
   getNearestSlot (parkingSlots, size) {
 		for (var i = 0; i < parkingSlots.length; i++) {
 			if (parkingSlots[i].vehicleNumber === '' && parkingSlots[i].vehicleSize === size) return parkingSlots[i].slotNumber;
