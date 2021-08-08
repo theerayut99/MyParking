@@ -1,13 +1,13 @@
 'use strict';
 
-const _ = require('lodash')
+const _ = require('lodash');
+const { slowlog } = require('../../config/db_redis');
 const modelRedis = require('../models/model_redis')
 
 class Parking {
 	constructor () {
     this.slot = 0;
     this.parkingSlots = [];
-    this.sizes = ['small', 'medium', 'large']
   }
 
   setParkingSlot (parkingSlots) {
@@ -18,15 +18,19 @@ class Parking {
   }
 
 	createParking (slot) {
-		this.slot = slot;
+    this.slot = _.sumBy(slot, 'slot');
 		if (this.slot <= 0) throw new Error('Minimum 1 slot is required');
-    for (var i = 0; i < this.slot; i++) {
-      this.parkingSlots.push({
-        slotNumber: i+1,
-        vehicleNumber: '',
-        vehicleSize: _.sample(this.sizes)
-      });
-    }
+    let slotIndex = 0;
+    slot.map(s => {
+      for (var i = 0; i < s.slot; i++) {
+        slotIndex += 1
+        this.parkingSlots.push({
+          slotNumber: slotIndex,
+          vehicleNumber: '',
+          vehicleSize: s.size
+        });
+      }
+    })
 		return this.parkingSlots;
 	}
 
@@ -65,7 +69,10 @@ class Parking {
   }
 
   parkingStatus (vehicleNumber) {
-    const vehicleByNumber = this.parkingSlots.filter( p => p.vehicleNumber === vehicleNumber )
+    let vehicleByNumber;
+    this.parkingSlots.filter(p => {
+      if (p.vehicleNumber === vehicleNumber) vehicleByNumber = p.vehicleNumber;
+    })
     return vehicleByNumber;
   }
 

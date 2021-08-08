@@ -11,6 +11,6 @@ router.post('/parking', Parking.parkingPost);
 router.post('/parking/car', Parking.parkingCarPost);
 router.get('/parking/car/status', Parking.carStatusGet);
 router.get('/parking/car/bysize/:size', Parking.carBySizeGet);
-router.delete('/parking/car/:parkingName/:vehicleNumber', Parking.leaveCarSlotDelete);
+router.delete('/parking/car/:vehicleNumber', Parking.leaveCarSlotDelete);
 
 module.exports = router;

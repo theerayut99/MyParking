@@ -6,7 +6,21 @@ let totalParkings;
 
 describe('Testing Parking Functions', function () {
   it('Creating Parking', (done) => {
-    totalParkings = parkingSlot.createParking(5);
+    let slot = [
+      {
+        "size": "small",
+        "slot": 2
+      },
+      {
+        "size": "medium",
+        "slot": 2
+      },
+      {
+        "size": "large",
+        "slot": 1
+      }
+    ]
+    totalParkings = parkingSlot.createParking(slot);
     const countParking = totalParkings.length || 0;
     assert.equal(countParking, 5);
     done();
@@ -15,7 +29,7 @@ describe('Testing Parking Functions', function () {
   it('Add Vehicle to Parking', (done) => {
     const result = parkingSlot.addVehicle({
       vehicleNumber: 'กค8882',
-      vehicleSize: 'large'
+      vehicleSize: 'small'
     });
     assert.equal(result, 1);
     done();
@@ -33,7 +47,7 @@ describe('Testing Parking Functions', function () {
   it('Add Vehicle to Parking', (done) => {
     const result = parkingSlot.addVehicle({
       vehicleNumber: 'ดด1234',
-      vehicleSize: 'midium'
+      vehicleSize: 'medium'
     });
     assert.equal(result, 3);
     done();
@@ -44,16 +58,16 @@ describe('Testing Parking Functions', function () {
       vehicleNumber: 'พร1',
       vehicleSize: 'large'
     });
-    assert.equal(result, 4);
+    assert.equal(result, 5);
     done();
   })
 
   it('Add Vehicle to Parking', (done) => {
     const result = parkingSlot.addVehicle({
       vehicleNumber: 'กด432',
-      vehicleSize: 'midium'
+      vehicleSize: 'medium'
     });
-    assert.equal(result, 5);
+    assert.equal(result, 4);
     done();
   })
 
@@ -65,7 +79,7 @@ describe('Testing Parking Functions', function () {
 
   it('Check car status from Vehicle Number พร1', function (done) {
     var result = parkingSlot.parkingStatus('พร1');
-    assert.equal(result, true);
+    assert.equal(result, 'พร1');
     done();
   });
 

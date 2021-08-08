@@ -31,7 +31,7 @@ const Parking = {
         msg: null,
         data: {}
       }
-      const slot = req.body.parkingSlot;
+      let slot = req.body.parkingLot;
       const parkingSlot = new ParkingService();
       const parkings = await parkingSlot.createParking(slot);
       const result = await modelRedis.setStoreByKey('park', parkings);
@@ -106,7 +106,6 @@ const Parking = {
       parkingsSlot = parkingsSlot.map(p => {
         if (p.vehicleNumber === vehicleNumber) {
           p.vehicleNumber = '';
-          p.vehicleSize = '';
         }
         return p;
       });
