@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npm run development",
     "development": "cross-env NODE_ENV=development nodemon --exec babel-node server.js",
-    "start": "node server.js",
+    "start": "cross-env NODE_ENV=development node server.js",
     "test-unit": "mocha tests/parking.js",
     "docker:run": "./node_modules/pm2/bin/pm2-runtime server.js -i max --exp-backoff-restart-delay=100 --node-args=\"--harmony\" --node-args=\"--max_old_space_size=2048\""
   },

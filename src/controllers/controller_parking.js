@@ -11,8 +11,7 @@ const Parking = {
         msg: 'Not Found',
         data: {}
       }
-      const parkingName = req.query.parkinName;
-      const result = await modelRedis.getStoreByKey(parkingName);
+      const result = await modelRedis.getStoreByKey('park');
       if (result) {
         resData.code = 0;
         resData.msg = 'success';
@@ -32,11 +31,10 @@ const Parking = {
         msg: null,
         data: {}
       }
-      const parkingName = req.body.parkingName;
       const slot = req.body.parkingSlot;
       const parkingSlot = new ParkingService();
       const parkings = await parkingSlot.createParking(slot);
-      const result = await modelRedis.setStoreByKey(parkingName, parkings);
+      const result = await modelRedis.setStoreByKey('park', parkings);
       if (result) {
         resData.code = 0;
         resData.msg = 'success';
@@ -56,16 +54,15 @@ const Parking = {
         msg: null,
         data: {}
       }
-      let parkingName = req.body.parkingName;
       let vehicle = req.body.item;
-      let parkingsSlot = await modelRedis.getStoreByKey(parkingName);
+      let parkingsSlot = await modelRedis.getStoreByKey('park');
       const parkingSlot = new ParkingService();
       const isInParkinglot = await parkingSlot.isInParkinglot(vehicle.vehicleNumber, parkingsSlot);
       if (isInParkinglot) {
         resData.msg = "The car is in the parking lot.";
         return res.json(resData);
       }
-      let slotNumber = parkingSlot.getNearestSlot(parkingsSlot);
+      let slotNumber = parkingSlot.getNearestSlot(parkingsSlot, vehicle.vehicleSize);
       if (slotNumber && slotNumber > 0) {
         parkingsSlot = parkingsSlot.map(p => {
           if (p.slotNumber === slotNumber) {
@@ -75,10 +72,10 @@ const Parking = {
           return p;
         });
       } else {
-        resData.msg = "Parking lot is full.";
+        resData.msg = `Parking lot size ${vehicle.vehicleSize} is full.`;
         return res.json(resData);
       }
-      const result = await modelRedis.setStoreByKey(parkingName, parkingsSlot);
+      const result = await modelRedis.setStoreByKey('park', parkingsSlot);
       if (result) {
         resData.code = 0;
         resData.msg = 'success';
@@ -98,9 +95,8 @@ const Parking = {
         msg: null,
         data: {}
       }
-      let parkingName = req.params.parkingName;
       let vehicleNumber = req.params.vehicleNumber;
-      let parkingsSlot = await modelRedis.getStoreByKey(parkingName);
+      let parkingsSlot = await modelRedis.getStoreByKey('park');
       const parkingSlot = new ParkingService();
       const isInParkinglot = await parkingSlot.isInParkinglot(vehicleNumber, parkingsSlot);
       if (!isInParkinglot) {
@@ -114,7 +110,7 @@ const Parking = {
         }
         return p;
       });
-      const result = await modelRedis.setStoreByKey(parkingName, parkingsSlot);
+      const result = await modelRedis.setStoreByKey('park', parkingsSlot);
       if (result) {
         resData.code = 0;
         resData.msg = 'success';
@@ -134,17 +130,17 @@ const Parking = {
         msg: null,
         data: {}
       }
-      let parkingName = req.query.parkingName;
       let vehicleNumber = req.query.vehicleNumber;
-      let parkingsSlot = await modelRedis.getStoreByKey(parkingName);
+      let parkingsSlot = await modelRedis.getStoreByKey('park');
       const parkingSlot = new ParkingService();
-      const isInParkinglot = await parkingSlot.isInParkinglot(vehicleNumber, parkingsSlot);
-      if (!isInParkinglot) {
+      const carInParkinglot = parkingSlot.isInParkinglot(vehicleNumber, parkingsSlot);
+      if (!carInParkinglot) {
         resData.msg = "The car is not in the parking lot.";
         return res.json(resData);
       } else {
         resData.code = 0;
         resData.msg = "The car is in the parking lot.";
+        resData.data = carInParkinglot;
         return res.json(resData);
       }
     } catch (err) {
@@ -160,9 +156,8 @@ const Parking = {
         msg: null,
         data: {}
       }
-      let parkingName = req.query.parkingName;
-      let size = req.query.size;
-      let parkingsSlot = await modelRedis.getStoreByKey(parkingName);
+      let size = req.params.size;
+      let parkingsSlot = await modelRedis.getStoreByKey('park');
       const parkingSlot = new ParkingService();
       const vehicleNumber = await parkingSlot.carBySizeGet(size, parkingsSlot);
       if (!vehicleNumber) {

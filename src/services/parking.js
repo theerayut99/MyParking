@@ -1,11 +1,13 @@
 'use strict';
 
+const _ = require('lodash')
 const modelRedis = require('../models/model_redis')
 
 class Parking {
 	constructor () {
     this.slot = 0;
     this.parkingSlots = [];
+    this.sizes = ['small', 'medium', 'large']
   }
 
   setParkingSlot (parkingSlots) {
@@ -22,7 +24,7 @@ class Parking {
       this.parkingSlots.push({
         slotNumber: i+1,
         vehicleNumber: '',
-        vehicleSize: ''
+        vehicleSize: _.sample(this.sizes)
       });
     }
 		return this.parkingSlots;
@@ -30,7 +32,7 @@ class Parking {
 
   addVehicle (vehicle) {
     if (this.slot > 0) {
-      let slotNumber = this.getNearestSlot(this.parkingSlots);
+      let slotNumber = this.getNearestSlot(this.parkingSlots, vehicle.vehicleSize);
       if (slotNumber && slotNumber > 0) {
         this.parkingSlots = this.parkingSlots.map(p => {
           if (p.slotNumber === slotNumber) {
@@ -56,7 +58,6 @@ class Parking {
       if (p.vehicleNumber === vehicleNumber) {
         leaveVehicleNumber = p.vehicleNumber;
         p.vehicleNumber = '';
-        p.vehicleSize = '';
       }
       return p;
     });
@@ -64,35 +65,22 @@ class Parking {
   }
 
   parkingStatus (vehicleNumber) {
-    let chk = false;
-    this.parkingSlots.map(p => {
-      if (p.vehicleNumber === vehicleNumber) chk = true;
-    })
-    return chk;
+    const vehicleByNumber = this.parkingSlots.filter( p => p.vehicleNumber === vehicleNumber )
+    return vehicleByNumber;
   }
 
-  async isInParkinglot (vehicleNumber, parkingSlots) {
-    return new Promise(function(resolve, reject) {
-      try {
-        let chk = false;
-			  parkingSlots.map(p => {
-          if (p.vehicleNumber === vehicleNumber) chk = true;
-        })
-				resolve(chk)
-			} catch (error) {
-				console.error('### Error service Parking.isInSlot', error)
-				resolve(false)
-			}
-		})
+  isInParkinglot (vehicleNumber, parkingSlots) {
+    let vehicleByNumber;
+    parkingSlots.filter(p => {
+      if (p.vehicleNumber === vehicleNumber) vehicleByNumber = p;
+    })
+    return vehicleByNumber;
   }
 
   async carBySizeGet (size, parkingSlots) {
     return new Promise(function(resolve, reject) {
       try {
-        let carNumber = false;
-			  carNumber = parkingSlots.filter(p => {
-          if (p.vehicleSize === size) return p.vehicleNumber;
-        })
+        const carNumber = parkingSlots.filter(p => p.vehicleSize === size && p.vehicleNumber !== '' )
 				resolve(carNumber)
 			} catch (error) {
 				console.error('### Error service Parking.isInSlot', error)
@@ -101,9 +89,9 @@ class Parking {
 		})
   }
 
-  getNearestSlot (parkingSlots) {
+  getNearestSlot (parkingSlots, size) {
 		for (var i = 0; i < parkingSlots.length; i++) {
-			if (parkingSlots[i].vehicleNumber === '' && parkingSlots[i].vehicleSize === '') return parkingSlots[i].slotNumber;
+			if (parkingSlots[i].vehicleNumber === '' && parkingSlots[i].vehicleSize === size) return parkingSlots[i].slotNumber;
 		}
     return false;
   }
