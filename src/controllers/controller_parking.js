@@ -11,7 +11,7 @@ const Parking = {
         msg: 'Not Found',
         data: {}
       }
-      const parkingName = req.query.parking_name;
+      const parkingName = req.query.parkinName;
       const result = await modelRedis.getStoreByKey(parkingName);
       if (result) {
         resData.code = 0;
@@ -151,7 +151,34 @@ const Parking = {
       console.error('# Error Controller Parking.leaveCarSlotDelete:', err);
       return next(err);
     }
-  }
+  },
+  carBySizeGet: async (req, res, next) => {
+    console.log('# Controller Parking.leaveCarSlotDelete');
+    try {
+      let resData = {
+        code: 1,
+        msg: null,
+        data: {}
+      }
+      let parkingName = req.query.parkingName;
+      let size = req.query.size;
+      let parkingsSlot = await modelRedis.getStoreByKey(parkingName);
+      const parkingSlot = new ParkingService();
+      const vehicleNumber = await parkingSlot.carBySizeGet(size, parkingsSlot);
+      if (!vehicleNumber) {
+        resData.msg = `The car size ${size} is not in the parking lot.`;
+        return res.json(resData);
+      } else {
+        resData.code = 0;
+        resData.msg = "success";
+        resData.data = global.helper.parking_lot._map_vehicleNumber_by_size_list(vehicleNumber);
+        return res.json(resData);
+      }
+    } catch (err) {
+      console.error('# Error Controller Parking.leaveCarSlotDelete:', err);
+      return next(err);
+    }
+  },
 };
 
 module.exports = Parking;

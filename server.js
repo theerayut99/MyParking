@@ -15,8 +15,7 @@ const router = Router()
 
 require('./config/config')
 require('./config/db_redis')
-
-// require('./src/helper')
+require('./src/helper')
 
 // routes
 app.use('/api', require('./routes/route_api'));

@@ -86,6 +86,21 @@ class Parking {
 		})
   }
 
+  async carBySizeGet (size, parkingSlots) {
+    return new Promise(function(resolve, reject) {
+      try {
+        let carNumber = false;
+			  carNumber = parkingSlots.filter(p => {
+          if (p.vehicleSize === size) return p.vehicleNumber;
+        })
+				resolve(carNumber)
+			} catch (error) {
+				console.error('### Error service Parking.isInSlot', error)
+				resolve(false)
+			}
+		})
+  }
+
   getNearestSlot (parkingSlots) {
 		for (var i = 0; i < parkingSlots.length; i++) {
 			if (parkingSlots[i].vehicleNumber === '' && parkingSlots[i].vehicleSize === '') return parkingSlots[i].slotNumber;
